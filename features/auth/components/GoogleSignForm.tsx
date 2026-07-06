@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import SignWithGoogle from "../action/SignWithGoogle";
-
-type GitHubSignFormProps = {
+import { FcGoogle } from "react-icons/fc";
+type GoogleSignFormProps = {
   callbackUrl?: string;
 };
 
-export default function GoogleSignForm({ callbackUrl }: GitHubSignFormProps) {
+export default function GoogleSignForm({ callbackUrl }: GoogleSignFormProps) {
   return (
     <form action={SignWithGoogle}>
       {callbackUrl && (
@@ -13,6 +13,7 @@ export default function GoogleSignForm({ callbackUrl }: GitHubSignFormProps) {
       )}
 
       <Button type="submit" className="w-full">
+        <FcGoogle className="mr-2 h-5 w-5" />
         Continue with Google
       </Button>
     </form>

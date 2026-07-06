@@ -22,6 +22,23 @@ export default async function SignWithGoogle(formData: FormData) {
   }
 }
 
+export async function SignWithGithub(formData: FormData) {
+  const callback = await formData.get("callbackUrl");
+  const redirectTo = getSafeCallbackPath(
+    typeof callback === "string" ? callback : null
+  );
+  const result = await auth.api.signInSocial({
+    body: {
+      provider: "github",
+      callbackURL: redirectTo,
+    },
+    headers: await headers(),
+  });
+  if (result.url) {
+    redirect(result.url);
+  }
+}
+
 export async function getServerSession() {
   return await auth.api.getSession({
     headers: await headers(),

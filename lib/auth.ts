@@ -6,13 +6,21 @@ import { nextCookies } from "better-auth/next-js";
 // If your Prisma file is located elsewhere, you can change the path
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql", 
+    provider: "postgresql",
     // or "mysql", "postgresql", ...etc
   }),
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      mapProfileToUser: async (profile) => ({
+        email: profile.email ?? `${profile.id}@users.noreply.github.com`,
+        name: profile.name ?? profile.login,
+      }),
     },
   },
   plugins: [nextCookies()],

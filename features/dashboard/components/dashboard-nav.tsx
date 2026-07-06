@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, GitBranch, Settings } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
 
 import {
   DASHBOARD_NAV_ITEMS,
@@ -21,7 +22,7 @@ import {
 const NAV_ICONS = {
   "layout-dashboard": LayoutDashboard,
   "folder-git-2": GitBranch,
-  github: GitBranch,
+  github: FaGithub,
   settings: Settings,
 } as const;
 
