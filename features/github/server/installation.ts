@@ -34,6 +34,13 @@ export async function getInstallationStatus(userId: string) {
     installedAt: installation.createdAt.toISOString(),
   };
 }
+export async function getInstallation(userId: string) {
+  return prisma.githubInstallation.findUnique({
+    where: {
+      userId,
+    },
+  });
+}
 
 export async function saveInstallation(userId: string, installationId: number) {
   const app = getGithubApp();
@@ -65,6 +72,16 @@ export async function saveInstallation(userId: string, installationId: number) {
 }
 
 export async function DeleteInstallation(userId: string) {
+  const installation = await prisma.githubInstallation.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if (!installation) {
+    return;
+  }
+
   await prisma.githubInstallation.delete({
     where: {
       userId,

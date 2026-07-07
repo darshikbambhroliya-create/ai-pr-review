@@ -1,19 +1,14 @@
 "use server";
 
 import { getServerSession } from "@/features/auth/action/SignWithGoogle";
-import { DASHBOARD_ROUTES } from "@/features/dashboard/lib/routes";
-import { redirect } from "next/navigation";
-import { DeleteInstallation } from "../server/installation";
-
-
+import { DeleteInstallation } from "@/features/github/server/installation";
 
 export async function disconnectGithubApp() {
   const session = await getServerSession();
 
   if (!session) {
-    redirect("/sign-in");
+    throw new Error("Unauthorized");
   }
 
   await DeleteInstallation(session.user.id);
-  redirect(DASHBOARD_ROUTES.github);
 }

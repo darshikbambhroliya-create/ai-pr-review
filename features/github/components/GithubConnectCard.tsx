@@ -5,6 +5,7 @@ import { LuUnplug } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa";
 import { Card } from "@/components/ui/card";
 import { disconnectGithubApp } from "../action/index";
+import { DisconnectButton } from "./disconnect-app";
 type GithubConnectAppProps = {
   userId: string;
   installation: GithubInstallationStatus;
@@ -41,14 +42,7 @@ function ConnectionAction({
   installUrl: string;
 }) {
   if (connected) {
-    return (
-      <form action={disconnectGithubApp}>
-        <Button variant="destructive">
-          <LuUnplug className="mr-2 h-4 w-4" />
-          Disconnect
-        </Button>
-      </form>
-    );
+    return <DisconnectButton />;
   }
 
   return (
@@ -60,6 +54,7 @@ function ConnectionAction({
     </Button>
   );
 }
+
 export function GithubConnectCard({
   userId,
   installation,
@@ -70,7 +65,6 @@ export function GithubConnectCard({
     <Card className="w-full max-w-md p-6">
       <div className="flex items-center justify-between">
         <ConnectionDetails connected={connected} accountLogin={accountLogin} />
-
         <ConnectionAction connected={connected} installUrl={installUrl} />
       </div>
     </Card>
