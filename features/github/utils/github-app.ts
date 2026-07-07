@@ -15,8 +15,9 @@ export function getGithubApp() {
   return githubApp;
 }
 export function getGithubInstallUrl(userId: string) {
-  const appName = process.env.GITHUB_APP_NAME;
-  const url = new URL(`https://github.com/apps/${appName}/installation/new`);
+  const url = new URL(
+    `https://github.com/apps/ai-pr-github-app/installations/new`
+  );
   url.searchParams.set("state", userId);
   return url.toString();
 }

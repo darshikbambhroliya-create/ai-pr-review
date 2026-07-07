@@ -1,6 +1,5 @@
 import type { GithubInstallationStatus } from "@/features/dashboard/lib/types";
 import { getGithubInstallUrl } from "../utils/github-app";
-import { disconnect } from "process";
 import { Button } from "@/components/ui/button";
 import { LuUnplug } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa";

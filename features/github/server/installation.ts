@@ -5,9 +5,15 @@ import { getGithubApp } from "../utils/github-app";
 function getAccountLogin(
   account: { login?: string; slug?: string } | null | undefined
 ) {
-  if (!account) return null;
-  if (account.login && "login" in account) return account.login;
-  if (account.slug) return account.slug;
+  if (!account) {
+    return null;
+  }
+  if (account.login && "login" in account) {
+    return account.login;
+  }
+  if (account.slug) {
+    return account.slug;
+  }
   return null;
 }
 
@@ -15,9 +21,7 @@ function buildDisconnectStatus(): GithubInstallationStatus {
   return { connected: false, accountLogin: null, installedAt: null };
 }
 
-export async function getInstallationStatus(
-  userId: string
-): Promise<GithubInstallationStatus> {
+export async function getInstallationStatus(userId: string) {
   const installation = await prisma.githubInstallation.findUnique({
     where: {
       userId,
@@ -43,6 +47,7 @@ export async function saveInstallation(userId: string, installationId: number) {
   if (!accountLogin) {
     throw new Error("GitHub account login is missing");
   }
+
   await prisma.githubInstallation.upsert({
     where: { userId },
     create: {

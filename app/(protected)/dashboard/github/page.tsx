@@ -1,7 +1,8 @@
 import { requireAuth } from "@/features/auth/action/SignWithGoogle";
 import { DashboardHeader } from "@/features/dashboard/components/dashboard-header";
-import { GithubConnectCard } from "@/hooks/github/components/GithubConnectCard";
-import { getInstallationStatus } from "@/hooks/github/server/installation";
+import { GithubConnectCard } from "@/features/github/components/GithubConnectCard";
+import { getInstallationStatus } from "@/features/github/server/installation";
+
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
