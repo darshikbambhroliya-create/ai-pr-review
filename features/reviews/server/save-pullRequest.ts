@@ -8,28 +8,30 @@ function getAuthorLogin(user: { login: string } | null): string | null {
   return user.login;
 }
 
-export async function savePullRequest(payload: PullRequestWebhookPayload) {
-  const repoFullName = await payload.repository.full_name;
-  const prNumber = await payload.pull_request.number;
-  const pull_request = await prisma.pullRequest.upsert({
+export async function savePullRequest(event: PullRequestWebhookPayload) {
+  return prisma.pullRequest.upsert({
     where: {
-      repoFullName_prNumber: { repoFullName, prNumber },
+      repoFullName_prNumber: {
+        repoFullName: event.repository.full_name,
+        prNumber: event.pull_request.number,
+      },
     },
+
     create: {
-      installationId: payload.installation.id,
-      repoFullName,
-      prNumber,
-      title: payload.pull_request.title,
-      authorLogin: getAuthorLogin(payload.pull_request.user),
-      headSha: payload.pull_request.head?.sha,
-      baseBranch: payload.pull_request.base.ref,
+      installationId: event.installation.id,
+      repoFullName: event.repository.full_name,
+      prNumber: event.pull_request.number,
+      title: event.pull_request.title,
+      authorLogin: event.pull_request.user?.login,
+      headSha: event.pull_request.head.sha,
+      baseBranch: event.pull_request.base.ref,
       status: "pending",
     },
+
     update: {
-      title: payload.pull_request.title,
-      headSha: payload.pull_request.head?.sha,
+      title: event.pull_request.title,
+      headSha: event.pull_request.head.sha,
       status: "pending",
     },
   });
-  console.log(pull_request);
 }

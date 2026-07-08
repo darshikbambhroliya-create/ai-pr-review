@@ -1,4 +1,5 @@
 import { savePullRequest } from "@/features/reviews/server/save-pullRequest";
+import { inngest } from "@/features/inngest/client";
 import { getGithubApp } from "../utils/github-app";
 
 export type PullRequestWebhookPayload = {
@@ -32,11 +33,13 @@ async function isSignatureValid(payload: string, signature: string | null) {
   }
 
   const app = getGithubApp();
+
   return app.webhooks.verify(payload, signature);
 }
 
 export async function handleGithubWebhook(req: Request) {
   console.log("webhook is working");
+
   const payload = await req.text();
 
   const signature = req.headers.get("x-hub-signature-256");
@@ -54,15 +57,21 @@ export async function handleGithubWebhook(req: Request) {
 
   const event = JSON.parse(payload) as PullRequestWebhookPayload;
 
-  console.log(event);
+  console.log("GitHub PR Event:", event.action);
 
   if (!REVIEWABLE_ACTIONS.includes(event.action)) {
     return Response.json({ received: true });
   }
 
-  await savePullRequest(event);
+  // Save PR in database
+  const pullRequest = await savePullRequest(event);
 
-  // TODO: Trigger background job
+  await inngest.send({
+    name: "github/pr.received",
+    data: {
+      pullRequestId: pullRequest.id,
+    },
+  });
 
   return Response.json({ received: true });
 }

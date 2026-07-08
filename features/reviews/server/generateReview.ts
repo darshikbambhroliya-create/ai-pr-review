@@ -46,27 +46,39 @@ type ReviewInput = {
   repoFullName: string;
   title: string;
   /** Chunks retrieved from the PR's Pinecone namespace */
-  contextSnippets?: string[];
+  contextSnippets: string[];
   /** Optional chunks from repo-sync namespace (full codebase context) */
-  repoContextSnippets?: string[];
+  repoContextSnippets: string[];
 };
 
 function buildRepoContextSection(repoContextSnippets: string[]) {
   if (repoContextSnippets.length === 0) {
     return "";
   }
-  const repoContext = repoContextSnippets.join("\n\n");
+
+  const repoContext = repoContextSnippets.join("\n\n---\n\n");
+
   return `
-  Related code from repo
-  ${repoContext}
-  `;
+  
+  Related code from the repository (for context only, not part of the change):
+  
+  ${repoContext}`;
 }
 
 export async function generateReview(input: ReviewInput) {
+  const context = input.contextSnippets.join("\n\n---\n\n");
+  const repoContextSection = buildRepoContextSection(input.repoContextSnippets);
+
   const { text } = await generateText({
     model: openrouter(REVIEW_MODEL),
     system: SYSTEM_PROMPT,
-    prompt: `repository:${input.repoFullName} Pull request title : ${input.title}`,
+    prompt: `Repository: ${input.repoFullName}
+  Pull request title: ${input.title}
+  
+  Code changes:
+  
+  ${context}${repoContextSection}`,
   });
+
   return text;
 }
